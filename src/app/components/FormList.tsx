@@ -15,7 +15,6 @@ function ItemList(props: { data: IData; deleteItem: any }) {
 
   return (
     <li className='flex justify-end items-center p-2 rounded-xl outline-none gap-10'>
-      <span className='text-center'>{props.data.id}</span>
       <span className='text-center'>{props.data.name}</span>
       <input
         className='rounded-xl text-center outline-none border-b-slate-900 border-b-2'
@@ -31,7 +30,7 @@ function ItemList(props: { data: IData; deleteItem: any }) {
       />
       <Trash2
         className='cursor-pointer'
-        onClick={() => props. deleteItem(props.data.id)}
+        onClick={() => props.deleteItem(props.data.id)}
       />
     </li>
   );
@@ -39,25 +38,9 @@ function ItemList(props: { data: IData; deleteItem: any }) {
 
 export default function FormList() {
   const [value, setValue] = useState('');
-
-  /**
-   * example of data
-   * const data = [
-   * {
-   * id: 1,
-   * name: 'item 1',
-   * value: 10
-   * quantity: 1
-   * },
-   * {
-   * id: 2,
-   * name: 'item 2',
-   * value: 20
-   * quantity: 2
-   * }
-   * ]   */
-
-  const [data, setData] = useState<IData[] | []>([]);
+  const [data, setData] = useState<IData[] | []>(
+    JSON.parse(localStorage.getItem('data') || '[]')
+  );
 
   function addItem(e: any) {
     e.preventDefault();
@@ -70,12 +53,15 @@ export default function FormList() {
       value: 0,
       quantity: 1,
     };
+    localStorage.setItem('data', JSON.stringify([...data, item]));
     setData([...data, item]);
+
     setValue('');
   }
 
   function deleteItem(id: number) {
     const newData = data?.filter((item) => item.id !== id);
+    localStorage.setItem('data', JSON.stringify(newData));
     setData(newData);
   }
 
